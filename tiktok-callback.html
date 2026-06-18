@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>TikTok OAuth Callback</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #0b0b0d;
+      color: #f2f2f2;
+      line-height: 1.6;
+    }
+    main {
+      max-width: 820px;
+      margin: 0 auto;
+      padding: 64px 24px;
+    }
+    code, textarea {
+      width: 100%;
+      box-sizing: border-box;
+      background: #141417;
+      color: #f2f2f2;
+      border: 1px solid #2a2a2d;
+      border-radius: 10px;
+      padding: 14px;
+      font-family: Consolas, monospace;
+      font-size: 14px;
+    }
+    textarea {
+      min-height: 120px;
+    }
+    button {
+      margin-top: 12px;
+      padding: 10px 16px;
+      border: 0;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: 700;
+    }
+    .muted {
+      color: #b8b8b8;
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <h1>TikTok OAuth Callback</h1>
+    <p class="muted">
+      Authorization finished. Copy the authorization code below and paste it into the local setup script.
+    </p>
+
+    <h2>Authorization code</h2>
+    <textarea id="code" readonly></textarea>
+    <button onclick="copyCode()">Copy code</button>
+
+    <h2>Full callback URL</h2>
+    <textarea id="fullUrl" readonly></textarea>
+
+    <p id="status"></p>
+  </main>
+
+  <script>
+    const params = new URLSearchParams(window.location.search);
+    const code = params.get("code") || "";
+    const state = params.get("state") || "";
+    const error = params.get("error") || "";
+    const errorDescription = params.get("error_description") || "";
+
+    document.getElementById("code").value = code;
+    document.getElementById("fullUrl").value = window.location.href;
+
+    const status = document.getElementById("status");
+
+    if (error) {
+      status.textContent = "OAuth error: " + error + " " + errorDescription;
+      status.style.color = "#ff7777";
+    } else if (code) {
+      status.textContent = "Authorization code received successfully.";
+      status.style.color = "#8ef58e";
+    } else {
+      status.textContent = "No authorization code found in URL.";
+      status.style.color = "#ffcc66";
+    }
+
+    function copyCode() {
+      const value = document.getElementById("code").value;
+      navigator.clipboard.writeText(value);
+    }
+  </script>
+</body>
+</html>
